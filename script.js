@@ -41,6 +41,50 @@ document.addEventListener('DOMContentLoaded', () => {
     const layoutStyles = document.createElement('style');
     layoutStyles.dataset.profileLayout = 'true';
     layoutStyles.textContent = `
+      body .en { display: inline; }
+      body .zh { display: none; }
+      body.lang-zh .en { display: none; }
+      body.lang-zh .zh { display: inline; }
+
+      .courses-section {
+        margin-top: 18px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(17, 34, 51, 0.08);
+      }
+
+      .courses-section h2 {
+        margin: 0 0 12px;
+      }
+
+      .courses-section .course-list {
+        list-style: none;
+        padding: 0;
+        margin: 16px 0 0;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 18px;
+      }
+
+      .courses-section .course-list li {
+        margin: 0;
+        padding: 12px 14px;
+        background: #f7f7f6;
+        border: 1px solid #eae8e3;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(28, 31, 35, 0.02);
+      }
+
+      .courses-section .course-list li span {
+        display: block;
+      }
+
+      @media (max-width: 700px) {
+        .courses-section .course-list {
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+      }
+
       @media (min-width: 701px) {
         html, body { height: 100%; overflow: hidden; }
         .site-header { position: fixed; inset: 0 0 auto; height: 72px; z-index: 100; }
