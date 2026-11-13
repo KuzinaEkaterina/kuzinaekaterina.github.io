@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const portraitColumn = document.querySelector('.portrait-column');
   const actions = document.querySelector('.top-actions');
 
+  // Add the courses navigation item and bilingual course list once.
   if (topNav && !topNav.querySelector('a[href="#courses"]')) {
     const link = document.createElement('a');
     link.href = '#courses';
@@ -11,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     topNav.querySelector('a[href="#about"]')?.after(link);
   }
 
-  // Keep the complete course list available in both English and Chinese.
   if (aboutSection && !document.querySelector('#courses')) {
     const section = document.createElement('section');
     section.id = 'courses';
@@ -35,35 +35,35 @@ document.addEventListener('DOMContentLoaded', () => {
     aboutSection.after(section);
   }
 
-  if (portraitColumn && actions && !portraitColumn.contains(actions)) {
-    portraitColumn.append(actions);
-  }
+  if (portraitColumn && actions && !portraitColumn.contains(actions)) portraitColumn.append(actions);
 
   if (!document.querySelector('style[data-profile-layout]')) {
-    const layoutStyles = document.createElement('style');
-    layoutStyles.dataset.profileLayout = 'true';
-    layoutStyles.textContent = `
+    const style = document.createElement('style');
+    style.dataset.profileLayout = 'true';
+    style.textContent = `
       body .en { display: inline; }
       body .zh { display: none; }
       body.lang-zh .en { display: none; }
       body.lang-zh .zh { display: inline; }
-
       .language-switches { display: inline-flex; gap: 6px; align-items: center; }
       .language-switches .lang-switch { margin: 0; }
       .top-actions { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 0 0 12px; }
       .top-actions .download-button { margin-top: 4px; }
-
-      .courses-section { margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(17,34,51,0.08); }
+      .courses-section { margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(17,34,51,.08); }
       .courses-section h2 { margin: 0 0 8px; }
       .courses-section > p:not(.eyebrow) { margin: 0 0 10px; }
-      .courses-section .course-list { list-style: none; padding: 0; margin: 8px 0 0; display: grid; grid-template-columns: 1fr; }
-      .courses-section .course-list li { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0; padding: 7px 0; border-bottom: 1px solid rgba(17,34,51,0.08); }
-      .courses-section .course-list li > span { min-width: 0; }
-      .courses-section .course-list small { flex: 0 0 auto; color: #78838d; font-size: 0.82em; line-height: 1.4; text-align: right; }
-
+      .courses-section .course-list {
+        list-style: none; padding: 0; margin: 8px 0 0;
+        display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: 28px; row-gap: 0;
+      }
+      .courses-section .course-list li {
+        display: block; min-width: 0; margin: 0; padding: 7px 0;
+        border-bottom: 1px solid rgba(17,34,51,.08);
+      }
       @media (max-width: 700px) {
-        .courses-section .course-list li { display: block; padding: 8px 0; }
-        .courses-section .course-list small { display: block; margin-top: 1px; text-align: left; }
+        .courses-section .course-list { grid-template-columns: 1fr; }
+        .courses-section .course-list li { padding: 8px 0; }
       }
       @media (min-width: 701px) {
         html, body { height: 100%; overflow: hidden; }
@@ -74,8 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .intro-section { display: block; padding: 30px 0 44px; }
         .portrait-column { position: fixed; top: 112px; left: 4.5%; width: 22%; max-width: 310px; padding: 0; z-index: 2; }
         .portrait { width: min(100%,270px); height: auto; aspect-ratio: 1; border-radius: 50%; border: 1px solid #e8eaec; object-fit: cover; object-position: center 27%; }
-        .portrait-column h1 { margin-top: 22px; }
-        .portrait-column .top-actions { display: flex; flex-direction: column; margin: 22px 0 0; gap: 10px; }
+        .portrait-column .top-actions { margin: 22px 0 0; gap: 10px; }
         .portrait-column .download-button { margin: 0; padding: 11px 15px; font-size: 13px; }
         .portrait-column .lang-switch { margin: 0; padding: 10px 13px; font-size: 13px; }
       }
@@ -85,59 +84,59 @@ document.addEventListener('DOMContentLoaded', () => {
         .page { position: static; width: auto; height: auto; overflow: visible; margin: 0 auto; }
         .intro-section { display: grid; }
         .portrait-column { position: static; width: auto; max-width: none; }
-        .portrait-column .top-actions { display: flex; flex-direction: column; margin: 12px 0 0; gap: 9px; }
+        .portrait-column .top-actions { margin: 12px 0 0; gap: 9px; }
         .top-nav > .top-actions { display: none; }
       }
     `;
-    document.head.append(layoutStyles);
+    document.head.append(style);
   }
 
-  const originalSwitch = document.querySelector('.lang-switch');
-  if (originalSwitch && !document.querySelector('.lang-switch[data-language="en"]')) {
-    const group = document.createElement('span');
+  // Keep exactly two language buttons: EN and 中文.
+  const actionsButtons = actions ? [...actions.querySelectorAll('.lang-switch')] : [];
+  let englishButton = document.querySelector('.lang-switch[data-language="en"]') || actionsButtons[0] || document.querySelector('.lang-switch');
+  if (englishButton) {
+    const group = englishButton.closest('.language-switches') || document.createElement('span');
     group.className = 'language-switches';
-    originalSwitch.parentNode.insertBefore(group, originalSwitch);
-    group.append(originalSwitch);
-    originalSwitch.dataset.language = 'en';
-    originalSwitch.textContent = 'EN';
-    originalSwitch.setAttribute('aria-label', 'Switch to English');
+    if (!group.isConnected) englishButton.parentNode.insertBefore(group, englishButton);
+    group.append(englishButton);
+    englishButton.dataset.language = 'en';
+    englishButton.textContent = 'EN';
+    englishButton.setAttribute('aria-label', 'Switch to English');
 
-    const zhButton = document.createElement('button');
-    zhButton.type = 'button';
-    zhButton.className = 'lang-switch';
-    zhButton.dataset.language = 'zh';
-    zhButton.textContent = '中文';
-    zhButton.setAttribute('aria-label', '切换到中文');
-    group.append(zhButton);
-  }
+    let chineseButton = group.querySelector('.lang-switch[data-language="zh"]');
+    if (!chineseButton) {
+      chineseButton = document.createElement('button');
+      chineseButton.type = 'button';
+      chineseButton.className = 'lang-switch';
+      chineseButton.dataset.language = 'zh';
+      group.append(chineseButton);
+    }
+    chineseButton.textContent = '中文';
+    chineseButton.setAttribute('aria-label', '切换到中文');
 
-  const buttons = document.querySelectorAll('.lang-switch');
-  let savedLanguage = 'en';
-  try { savedLanguage = localStorage.getItem('cv-language') || 'en'; } catch (_) { /* storage may be disabled */ }
-
-  function setLanguage(language) {
-    const nextLanguage = language === 'zh' ? 'zh' : 'en';
-    document.body.classList.toggle('lang-zh', nextLanguage === 'zh');
-    document.body.classList.remove('lang-ru');
-    document.documentElement.lang = nextLanguage === 'zh' ? 'zh-CN' : 'en';
-    buttons.forEach((button) => {
-      button.setAttribute('aria-pressed', String(button.dataset.language === nextLanguage));
-      if (button.dataset.language === 'en') {
-        button.textContent = 'EN';
-        button.setAttribute('aria-label', 'Switch to English');
-      } else if (button.dataset.language === 'zh') {
-        button.textContent = '中文';
-        button.setAttribute('aria-label', '切换到中文');
-      }
+    document.querySelectorAll('.lang-switch').forEach((button) => {
+      if (button !== englishButton && button !== chineseButton) button.remove();
     });
-    try { localStorage.setItem('cv-language', nextLanguage); } catch (_) { /* storage may be disabled */ }
+
+    let savedLanguage = 'en';
+    try { savedLanguage = localStorage.getItem('cv-language') || 'en'; } catch (_) { /* storage may be disabled */ }
+
+    function setLanguage(language) {
+      const current = language === 'zh' ? 'zh' : 'en';
+      document.body.classList.toggle('lang-zh', current === 'zh');
+      document.body.classList.remove('lang-ru');
+      document.documentElement.lang = current === 'zh' ? 'zh-CN' : 'en';
+      englishButton.setAttribute('aria-pressed', String(current === 'en'));
+      chineseButton.setAttribute('aria-pressed', String(current === 'zh'));
+      try { localStorage.setItem('cv-language', current); } catch (_) { /* storage may be disabled */ }
+    }
+
+    englishButton.addEventListener('click', () => setLanguage('en'));
+    chineseButton.addEventListener('click', () => setLanguage('zh'));
+    setLanguage(savedLanguage);
   }
 
-  buttons.forEach((button) => button.addEventListener('click', () => setLanguage(button.dataset.language || 'en')));
-  setLanguage(['en', 'zh'].includes(savedLanguage) ? savedLanguage : 'en');
-
-  // Remove legacy Russian controls/content and reset any previously saved RU preference.
-  document.querySelectorAll('.lang-switch[data-language="ru"]').forEach((element) => element.remove());
+  // Retire any legacy Russian translation spans and saved Russian preference.
   document.querySelectorAll('.ru').forEach((element) => element.remove());
   document.body.classList.remove('lang-ru');
   try { if (localStorage.getItem('cv-language') === 'ru') localStorage.setItem('cv-language', 'en'); } catch (_) { /* ignore */ }
