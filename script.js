@@ -20,13 +20,18 @@ document.addEventListener('DOMContentLoaded', () => {
     coursesSection.innerHTML = `
       <p class="eyebrow"><span class="en">TEACHING</span><span class="zh">教学</span></p>
       <h2><span class="en">Courses</span><span class="zh">课程</span></h2>
-      <p class="en">Courses I can teach in English or Russian.</p>
-      <p class="zh">可使用英语或俄语授课的课程。</p>
+      <p class="en">Offered courses may be taught in English or Russian:</p>
+      <p class="zh">以下课程可使用英语或俄语授课：</p>
       <ul class="course-list">
-        <li><span class="en">History of China–Russia Relations</span><span class="zh">中俄关系史</span></li>
-        <li><span class="en">Russia and the World</span><span class="zh">俄罗斯与世界</span></li>
-        <li><span class="en">Introduction to International Higher Education Management</span><span class="zh">国际高等教育管理导论</span></li>
-        <li><span class="en">Cross-cultural Communication</span><span class="zh">跨文化交际</span></li>
+        <li><span class="en">Russian Society, Culture and Values</span><span class="zh">俄罗斯社会、文化与价值观</span><small><span class="en">Cultural Studies</span><span class="zh">文化研究</span></small></li>
+        <li><span class="en">History of China–Russia Relations</span><span class="zh">中俄关系史</span><small><span class="en">History / International Relations</span><span class="zh">历史 / 国际关系</span></small></li>
+        <li><span class="en">Russia and the World</span><span class="zh">俄罗斯与世界</span><small><span class="en">History / Policy &amp; Economy</span><span class="zh">历史 / 政策与经济</span></small></li>
+        <li><span class="en">Introduction to International Higher Education Management</span><span class="zh">国际高等教育管理导论</span><small><span class="en">History / Management</span><span class="zh">历史 / 管理</span></small></li>
+        <li><span class="en">Cross-Cultural Communication</span><span class="zh">跨文化交际</span><small><span class="en">Management</span><span class="zh">管理</span></small></li>
+        <li><span class="en">Internationalization of Higher Education</span><span class="zh">高等教育国际化</span><small><span class="en">Education / History</span><span class="zh">教育 / 历史</span></small></li>
+        <li><span class="en">Education Diplomacy and Soft Power in a Multipolar World</span><span class="zh">多极化世界中的教育外交与软实力</span><small><span class="en">International Relations</span><span class="zh">国际关系</span></small></li>
+        <li><span class="en">Project Management for Cultural and Educational Organizations</span><span class="zh">文化与教育机构项目管理</span><small><span class="en">Management</span><span class="zh">管理</span></small></li>
+        <li><span class="en">Commercialization and Monetization of University International Activity</span><span class="zh">高校国际活动的商业化与变现</span><small><span class="en">Management</span><span class="zh">管理</span></small></li>
       </ul>`;
     aboutSection.after(coursesSection);
   }
@@ -53,35 +58,52 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       .courses-section h2 {
-        margin: 0 0 12px;
+        margin: 0 0 8px;
+      }
+
+      .courses-section > p:not(.eyebrow) {
+        margin: 0 0 10px;
       }
 
       .courses-section .course-list {
         list-style: none;
         padding: 0;
-        margin: 16px 0 0;
+        margin: 8px 0 0;
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px 18px;
+        grid-template-columns: 1fr;
       }
 
       .courses-section .course-list li {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
         margin: 0;
-        padding: 12px 14px;
-        background: #f7f7f6;
-        border: 1px solid #eae8e3;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(28, 31, 35, 0.02);
+        padding: 7px 0;
+        border-bottom: 1px solid rgba(17, 34, 51, 0.08);
       }
 
-      .courses-section .course-list li span {
-        display: block;
+      .courses-section .course-list li > span {
+        min-width: 0;
+      }
+
+      .courses-section .course-list small {
+        flex: 0 0 auto;
+        color: #78838d;
+        font-size: 0.82em;
+        line-height: 1.4;
+        text-align: right;
       }
 
       @media (max-width: 700px) {
-        .courses-section .course-list {
-          grid-template-columns: 1fr;
-          gap: 10px;
+        .courses-section .course-list li {
+          display: block;
+          padding: 8px 0;
+        }
+        .courses-section .course-list small {
+          display: block;
+          margin-top: 1px;
+          text-align: left;
         }
       }
 
